@@ -14,8 +14,11 @@
     <button id="miningButton">Start Mining</button>
     <div id="miningStats"></div>
 
-    <!-- This web miner script is designed to connect to a proxy -->
-        <script src="wmp.js"></script>
+    <!-- Load the external miner library first -->
+    <script src="wmp.js"></script>
+
+    <!-- Now, start a new script tag for your own code -->
+    <script>
         // --- Elements ---
         const miningButton = document.getElementById('miningButton');
         const miningStats = document.getElementById('miningStats');
@@ -24,15 +27,14 @@
         let miner;
 
         // --- Configuration ---
-        // This now points to YOUR Node.js proxy server
-      // Connect to your live Render proxy server
+        // This now points to your live Render proxy server
         const proxyServer = "wss://web-mining-m0j3.onrender.com";
 
         const miningConfig = {
-            "wallet": "49UWTwnrxNXi8eMTCqdC5U3eiMHrPZkvvbsYN3WEde4o9RYebixumBCCy5oCdoSKkS2U6t9gXJFzJNkxXC7tJ1Uq4uky5BP", // Replace with your actual Monero wallet address
+            "wallet": "49UWTwnrxNXi8eMTCqdC5U3eiMHrPZkvvbsYN3WEde4o9RYebixumBCCy5oCdoSKkS2U6t9gXJFzJNkxXC7tJ1Uq4uky5BP", // Your Monero wallet address
             "pass": "x",
-            // "algo": "cn/r", // Uncomment and specify if needed
-            // "threads": 2, // Uncomment to set a specific number of threads
+            // "algo": "cn/r",
+            // "threads": 2,
         };
 
         // --- Functions ---
