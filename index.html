@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browser Mining with Proxy</title>
+</head>
+<body>
+
+    <h1>Support Us with Your CPU Power (via Proxy)</h1>
+    <p>By clicking the "Start Mining" button below, you agree to let this website use a small portion of your CPU processing power to mine Monero (XMR). This helps support our website as an alternative to traditional ads.</p>
+    <p>The mining process will only run while this tab is open and you can stop it at any time. You can monitor the hashrate below.</p>
+
+    <button id="miningButton">Start Mining</button>
+    <div id="miningStats"></div>
+
+    <!-- This web miner script is designed to connect to a proxy -->
+    <script src="https://cdn.jsdelivr.net/gh/notgiven688/notgiven688.github.io@master/wmp.js"></script>
+    <script>
+        // --- Elements ---
+        const miningButton = document.getElementById('miningButton');
+        const miningStats = document.getElementById('miningStats');
+
+        let isMining = false;
+        let miner;
+
+        // --- Configuration ---
+        // This now points to YOUR Node.js proxy server
+        const proxyServer = "ws://127.0.0.1:8892";
+
+        const miningConfig = {
+            "wallet": "YOUR_MONERO_WALLET_ADDRESS", // Replace with your actual Monero wallet address
+            "pass": "x",
+            // "algo": "cn/r", // Uncomment and specify if needed
+            // "threads": 2, // Uncomment to set a specific number of threads
+        };
+
+        // --- Functions ---
+        function startMiningProcess() {
+            miner = new WMP.Anonymous(proxyServer, miningConfig);
+            miner.start();
+            isMining = true;
+            miningButton.textContent = "Stop Mining";
+            miningStats.textContent = "Mining started...";
+
+            miner.on('hashrate', (data) => {
+                 miningStats.textContent = `Hashes per second: ${data.hashesPerSecond.toFixed(2)} | Total hashes: ${data.totalHashes}`;
+            });
+
+             miner.on('error', (data) => {
+                if (data.error !== 'connection_closed') {
+                    console.error("Miner error:", data.error);
+                    miningStats.textContent = `Error: ${data.error}`;
+                }
+            });
+        }
+
+        function stopMiningProcess() {
+            if (miner) {
+                miner.stop();
+            }
+            isMining = false;
+            miningButton.textContent = "Start Mining";
+            miningStats.textContent = "Mining stopped.";
+        }
+
+        // --- Event Listener ---
+        miningButton.addEventListener('click', () => {
+            if (isMining) {
+                stopMiningProcess();
+            } else {
+                startMiningProcess();
+            }
+        });
+    </script>
+
+</body>
+</html>
