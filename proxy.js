@@ -14,23 +14,29 @@ const POOL_PORT = 10128;
 
 // --- Create an HTTP Server ---
 const server = http.createServer((req, res) => {
-    // This part serves your index.html file
-    if (req.method === 'GET' && req.url === '/') {
-        const filePath = path.join(__dirname, 'index.html');
-        fs.readFile(filePath, (err, content) => {
-            if (err) {
-                res.writeHead(500);
-                res.end('Error loading index.html');
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(content);
-        });
+    let filePath;
+    let contentType = 'text/html'; // Default content type
+
+    if (req.url === '/') {
+        filePath = path.join(__dirname, 'index.html');
+    } else if (req.url === '/wmp.js') {
+        filePath = path.join(__dirname, 'wmp.js');
+        contentType = 'application/javascript'; // Set correct type for JS
     } else {
-        // Handle other HTTP requests (e.g., 404 Not Found)
-        res.writeHead(404);
+        res.writeHead(404); // For favicon.ico and other requests
         res.end();
+        return;
     }
+
+    fs.readFile(filePath, (err, content) => {
+        if (err) {
+            res.writeHead(500);
+            res.end('Error loading file');
+            return;
+        }
+        res.writeHead(200, { 'Content-Type': contentType });
+        res.end(content);
+    });
 });
 
 // --- Create WebSocket Server and attach it to the HTTP server ---
